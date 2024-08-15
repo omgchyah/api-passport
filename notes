@@ -1,0 +1,19 @@
+From the terminal:
+
+Creating an alias for "vendor/bin/sail":
+
+- nano ~/.bashrc
+- Scroll to the bottom of the file and add the following line:
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+
+Save and Exit:
+
+    If you're using nano, save and exit by pressing CTRL + X, then Y for yes, and Enter to confirm.
+
+After saving the file, apply the changes by sourcing the file:
+    
+    - source ~/.bashrc
+
+Now, you can use sail as a shortcut directly in your Visual Studio Code terminal. For example:
+
+
