@@ -24,8 +24,14 @@ class UserFactory extends Factory
     public function definition(): array
     {
 
-        $username = fake()->randomElement([fake()->username()->unique(), 'anonymous']);
-        $email = ($username === 'anonymous') ? fake()->unique()->safeEmail() : $username . fake()->numberBetween(1000, 9999) . "@example.com";
+        $role fake()->randomElement(['user', 'guest']);
+        if($role === 'user') {
+            $username = fake()->username()->unique();
+            $email = $username . fake()->numberBetween(1000, 9999) . "@example.com";
+        } else {
+            $username = 'anonymous';
+            $email = fake()->unique()->safeEmail();
+        }
 
         return [
             'username' => $username,
