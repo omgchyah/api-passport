@@ -25,11 +25,12 @@ class UserFactory extends Factory
     {
 
         $role = fake()->randomElement(['user', 'guest']);
+
         if($role === 'user') {
             $username = fake()->unique()->userName();
             $email = $username . fake()->numberBetween(1000, 9999) . "@example.com";
         } else {
-            $username = 'anonymous';
+            $username = null;
             $email = fake()->unique()->safeEmail();
         }
 
