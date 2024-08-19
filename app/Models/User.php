@@ -22,6 +22,11 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function games()
+    {
+        return $this->hasMany(Game::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
