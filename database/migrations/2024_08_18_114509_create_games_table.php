@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('dice_1');
-            $table->integer('dice_2');
+            $table->integer('dice1');
+            $table->integer('dice2');
             $table->enum('result', ['w', 'l']);
             $table->timestamps();
         });

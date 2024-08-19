@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Game;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Game>
@@ -18,21 +18,15 @@ class GameFactory extends Factory
     public function definition(): array
     {
 
-/*         $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->integer('dice_1');
-        $table->integer('dice_2');
-        $table->enum('result', ['w', 'l']);
-        $table->timestamps(); */
-
-
-
-
-
-
+        $dice1 = fake()->numberBetween(1, 6);
+        $dice2 = fake()->numberBetween(1, 6);
+        $result = ($dice1 + $dice2) == 7 ? 'w' : 'l';
 
         return [
-            'user_id'
+            'user_id' => User::factory(),
+            'dice1' => $dice1,
+            'dice2' => $dice2,
+            'result' => $result
         ];
     }
 }
