@@ -30,7 +30,7 @@ class UserFactory extends Factory
             $username = fake()->unique()->userName();
             $email = $username . fake()->numberBetween(1000, 9999) . "@example.com";
         } else {
-            $username = null;
+            $username = 'anonymous';
             $email = fake()->unique()->safeEmail();
         }
 
