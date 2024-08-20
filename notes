@@ -16,4 +16,42 @@ After saving the file, apply the changes by sourcing the file:
 
 Now, you can use sail as a shortcut directly in your Visual Studio Code terminal. For example:
 
+To create API scaffolding with passport package:
+
+sail php artisan api:install --passport
+
+To create and use tokens:
+
+sail php artisan passport:client --personal
+
+ What should we name the personal access client? [Laravel Personal Access Client]:
+ > API Auth
+
+    INFO  Personal access client created successfully.  
+
+  Client ID ............................................ 1  
+  Client secret . UzW6zGPtwuwP8aFZJDB2zXhVyBidHDRb37nH2HpG
+
+  Add Passport guard to my config/auth.php file:
+
+      'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
+    ],
+
+    Modify User model:
+
+    use Laravel\Passport\HasApiTokens;
+
+    class User extends Authenticatable
+    {
+    use HasApiTokens, HasFactory, Notifiable; 
+
+
 
