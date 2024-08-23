@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -33,6 +34,29 @@ class UserController extends Controller
     //POST [email, password]
     public function login(Request $request)
     {
+        //Validation
+        $validatedData = $request->validate([
+            "email" => "required|string|email",
+            "password" => "required|string"
+        ]);
+
+        $user = User::where("email", $validatedData['email'])->first();
+
+        if(isset($user)) {
+            if(Hash::check($validatedData["password"], $user->password)) {
+
+            } else {
+                return response()->json([
+                    "message" => "Password didn't match"
+                ]);
+            }
+        } else {
+            return response()->json([
+                "message" => "Invalid email value"
+            ], 401);
+        }
+
+        //Auth Token
 
 
     }
