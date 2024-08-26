@@ -24,7 +24,7 @@ class UserController extends Controller
             "username" => $validatedData["username"] ?? "anonymous", // Default to 'anonymous' if username is null
             "role" => isset($validatedData["username"]) ? "user" : "guest", // Role is 'user' if username is set, otherwise 'guest'
             "email" => $validatedData["email"],
-            "password" => bcrypt($validatedData["password"]), // Hash the password
+            "password" => Hash::make($validatedData["password"]), // Hash the password
         ]);
 
         return response()->json([
@@ -42,13 +42,19 @@ class UserController extends Controller
 
         $user = User::where("email", $validatedData['email'])->first();
 
-        if(isset($user)) {
+        if($user) {
+            //If password matches, create Token
             if(Hash::check($validatedData["password"], $user->password)) {
+                $token = $user->createToken("myToken")->accessToken;
 
+                return response()->json([
+                    "message" => "Login successful",
+                    "token" => $token
+                ], 200);
             } else {
                 return response()->json([
                     "message" => "Password didn't match"
-                ]);
+                ], 401);
             }
         } else {
             return response()->json([
@@ -65,7 +71,7 @@ class UserController extends Controller
     {
 
     }
-    //GET [Auth: Toke]
+    //GET [Auth: Token]
     public function logout()
     {
         
