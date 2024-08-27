@@ -9,12 +9,12 @@ use App\Http\Controllers\Api\UserController;
 })->middleware('auth:api'); */
 
 //Open Routes
-Route::post("register", [UserController::class, "register"]);
-Route::post("login", [UserController::class, "login"]);
+Route::post("players", [UserController::class, "register"]); //crea un jugador/a.
+Route::post("login", [UserController::class, "login"]); //Get player Token
 
 //Protected Routes
 Route::group([
-    "midleware" => ["auth:api"]
+    "middleware" => ["auth:api"]
 ], function() {
     Route::get("profile", [UserController::class, "profile"]);
     Route::get("logout", [UserController::class, "logout"]);

@@ -48,17 +48,17 @@ class UserController extends Controller
                 $token = $user->createToken("myToken")->accessToken;
 
                 return response()->json([
-                    "message" => "Login successful",
+                    "message" => "Login successful.",
                     "token" => $token
                 ], 200);
             } else {
                 return response()->json([
-                    "message" => "Password didn't match"
+                    "message" => "Password didn't match."
                 ], 401);
             }
         } else {
             return response()->json([
-                "message" => "Invalid email value"
+                "message" => "Invalid email value."
             ], 401);
         }
 
@@ -69,6 +69,24 @@ class UserController extends Controller
     // GET [Auth: Token]
     public function profile()
     {
+         $userData = auth()->user();
+
+        return response()->json([
+            "data" => $userData,
+        ], 200);
+
+        // Check if the authenticated user is an admin
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            // Return user data if the user is not an admin
+            return response()->json([
+                "data" => auth()->user(),
+            ], 200);
+        }
+
+        // Return a 403 Forbidden response if the user is not an admin
+        return response()->json([
+            "message" => "Admins.",
+        ], 403);
 
     }
     //GET [Auth: Token]
