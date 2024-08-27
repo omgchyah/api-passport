@@ -18,7 +18,7 @@ Route::group([
 ], function() {
 
         // Player-specific routes (only accessible to users with role 'user')
-    Route::middleware(['role:user'])->group(function () {
+    Route::middleware(['role:user,guest'])->group(function () {
         Route::get("profile", [UserController::class, "profile"]);
     });
 

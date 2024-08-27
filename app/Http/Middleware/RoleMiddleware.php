@@ -17,9 +17,9 @@ class RoleMiddleware
      * @param  string  $role
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if(!Auth::check() || !$request->user()->hasRole($role)) {
+        if(!Auth::check() || !in_array(Auth::user()->role, $roles)) {
             return response()->json([
                 "message" => "Unauthorized."
             ], 403);
