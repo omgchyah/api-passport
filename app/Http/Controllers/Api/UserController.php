@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -71,22 +72,29 @@ class UserController extends Controller
     {
 
         // Check if the authenticated user is not a admin
-        if (auth()->check() && auth()->user()->role !== 'admin') {
-            // Return user data if the user is not an admin
+        if (Auth::check()) {
+            if(Auth::user()->role === 'admin') {
+                return response()->json([
+                    "message" => "Access denied for admin users. Log in as a player to see your profile.",
+                ], 403);
+            }
+
             return response()->json([
-                "data" => auth()->user(),
+                "data" => Auth::user(),
             ], 200);
         }
-
-        // Return a 403 Forbidden response if the user is not an admin
+        // Return a 401 Unauthorized response if the user is not authenticated
         return response()->json([
-            "message" => "Admins.",
-        ], 403);
+            "message" => "User not authenticated.",
+        ], 401);
 
     }
     //GET [Auth: Token]
     public function logout()
     {
+        if(Auth::check()) {
+            
+        }
         
     }
 }
