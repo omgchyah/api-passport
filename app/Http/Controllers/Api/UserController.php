@@ -71,22 +71,22 @@ class UserController extends Controller
     public function profile()
     {
 
-        // Check if the authenticated user is not a admin
+/*         // Check if the authenticated user is not a admin
         if (Auth::check()) {
             if(Auth::user()->role === 'admin') {
                 return response()->json([
                     "message" => "Access denied for admin users. Log in as a player to see your profile.",
                 ], 403);
-            }
+            } */
 
             return response()->json([
                 "data" => Auth::user(),
             ], 200);
-        }
+/*         }
         // Return a 401 Unauthorized response if the user is not authenticated
         return response()->json([
             "message" => "User not authenticated.",
-        ], 401);
+        ], 401); */
 
     }
     //GET [Auth: Token]

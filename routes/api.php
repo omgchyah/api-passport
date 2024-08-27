@@ -16,7 +16,12 @@ Route::post("login", [UserController::class, "login"]); //Get player Token
 Route::group([
     "middleware" => ["auth:api"]
 ], function() {
-    Route::get("profile", [UserController::class, "profile"]);
+
+        // Player-specific routes (only accessible to users with role 'user')
+    Route::middleware(['role:user'])->group(function () {
+        Route::get("profile", [UserController::class, "profile"]);
+    });
+
     Route::get("logout", [UserController::class, "logout"]);
 });
 
