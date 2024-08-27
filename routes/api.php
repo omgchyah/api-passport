@@ -21,3 +21,32 @@ Route::group([
 });
 
     // Player-specific routes
+    /*POST /players:
+    PUT /players/{id}:
+    POST /players/{id}/games/:
+    DELETE /players/{id}/games:
+    GET /players/{id}/games:
+    */
+
+
+
+    //Admin-specific routes
+/*     GET /players:
+
+    Description: Return the list of all players in the system with their average success rate.
+    Role: Accessible only to admins.
+
+GET /players/ranking:
+
+    Description: Return the average ranking (success rate) of all players in the system.
+    Role: Accessible only to admins.
+
+GET /players/ranking/loser:
+
+    Description: Return the player with the worst success rate.
+    Role: Accessible only to admins.
+
+GET /players/ranking/winner:
+
+    Description: Return the player with the best success rate.
+    Role: Accessible only to admins. */
