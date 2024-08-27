@@ -93,8 +93,14 @@ class UserController extends Controller
     public function logout()
     {
         if(Auth::check()) {
-            
+            Auth::user()->tokens()->delete();
+            return response()->json([
+                "message" => "Logout ssuccessful.",
+            ], 200);  
+        } else {
+            return response()->json([
+                "message" => "User not authenticated.",
+            ], 401);
         }
-        
     }
 }
