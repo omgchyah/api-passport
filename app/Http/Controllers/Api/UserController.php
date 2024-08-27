@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,37 +71,74 @@ class UserController extends Controller
     // GET [Auth: Token]
     public function profile()
     {
-
-/*         // Check if the authenticated user is not a admin
-        if (Auth::check()) {
-            if(Auth::user()->role === 'admin') {
-                return response()->json([
-                    "message" => "Access denied for admin users. Log in as a player to see your profile.",
-                ], 403);
-            } */
-
+        if(Auth::check()) {
             return response()->json([
                 "data" => Auth::user(),
             ], 200);
-/*         }
-        // Return a 401 Unauthorized response if the user is not authenticated
-        return response()->json([
-            "message" => "User not authenticated.",
-        ], 401); */
-
-    }
-    //GET [Auth: Token]
-    public function logout()
-    {
-        if(Auth::check()) {
-            Auth::user()->tokens()->delete();
-            return response()->json([
-                "message" => "Logout ssuccessful.",
-            ], 200);  
         } else {
+            // Return a 401 Unauthorized response if the user is not authenticated
             return response()->json([
                 "message" => "User not authenticated.",
             ], 401);
         }
     }
+    //GET [Auth: Token]
+    public function logout()
+    {
+        // Ensure the user is authenticated
+        if (!Auth::check()) {
+            return response()->json([
+                "message" => "User not authenticated.",
+            ], 401);
+        }
+        Auth::user()->tokens()->delete();
+        return response()->json([
+                "message" => "Logout ssuccessful.",
+            ], 200);
+    }
+
+    public function editName(Request $request, int $id)
+    {
+        // Ensure the user is authenticated
+        if (!Auth::check()) {
+            return response()->json([
+                "message" => "User not authenticated.",
+            ], 401);
+        }
+
+        // Validate the new username
+        $validatedData = $request->validate([
+            "username" => "nullable|string|min:3",
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                "message" => "User not found.",
+            ], 404);
+        }
+
+        if ($user->id !== Auth::id()) {
+            return response()->json([
+                "message" => "You're not authorized to edit this user's name.",
+            ], 403);
+        }
+
+        // Update the user's name if the key exists
+        if (isset($validatedData["username"])) {
+            $user->username = $validatedData["username"];
+            $user->save(); // Save the changes to the database
+
+            return response()->json([
+                "message" => "Username changed successfully.",
+                "data" => $user
+            ], 200);
+        } else {
+            return response()->json([
+                "message" => "No username provided to update.",
+            ], 400);
+        }
+    }
+
 }

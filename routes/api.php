@@ -17,12 +17,14 @@ Route::group([
     "middleware" => ["auth:api"]
 ], function() {
 
-        // Player-specific routes (only accessible to users with role 'user')
+    Route::get("logout", [UserController::class, "logout"]);
+    // Player-specific routes (only accessible to users with role 'user' or 'guest')
     Route::middleware(['role:user,guest'])->group(function () {
+        Route::patch("players/{id}", [UserController::class, 'editName']); //modify player's name
         Route::get("profile", [UserController::class, "profile"]);
     });
 
-    Route::get("logout", [UserController::class, "logout"]);
+    
 });
 
     // Player-specific routes
