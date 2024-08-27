@@ -19,3 +19,5 @@ Route::group([
     Route::get("profile", [UserController::class, "profile"]);
     Route::get("logout", [UserController::class, "logout"]);
 });
+
+    // Player-specific routes

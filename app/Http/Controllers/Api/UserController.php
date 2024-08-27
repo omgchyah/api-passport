@@ -69,13 +69,8 @@ class UserController extends Controller
     // GET [Auth: Token]
     public function profile()
     {
-         $userData = auth()->user();
 
-        return response()->json([
-            "data" => $userData,
-        ], 200);
-
-        // Check if the authenticated user is an admin
+        // Check if the authenticated user is not a admin
         if (auth()->check() && auth()->user()->role !== 'admin') {
             // Return user data if the user is not an admin
             return response()->json([
