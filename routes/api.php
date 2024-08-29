@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\GameController;
 
 /* Route::get('/user', function (Request $request) {
     return $request->user();
@@ -18,10 +19,12 @@ Route::group([
 ], function() {
 
     Route::get("logout", [UserController::class, "logout"]);
+    
     // Player-specific routes (only accessible to users with role 'user' or 'guest')
     Route::middleware(['role:user,guest'])->group(function () {
         Route::patch("players/{id}", [UserController::class, 'editName']); //modify player's name
         Route::get("profile", [UserController::class, "profile"]);
+        Route::post("players/{id}/games", [GameController::class, "throwDice"]); 
     });
 
     
