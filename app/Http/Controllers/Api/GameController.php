@@ -40,7 +40,7 @@ class GameController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Game played successfully",
+            "message" => $result === 7 ? "Congratulations! You've won!" : "You've lost. Better luck next time!",
             "newGame" => $newGame,
         ], 201);
     }

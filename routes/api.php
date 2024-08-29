@@ -23,7 +23,7 @@ Route::group([
     // Player-specific routes (only accessible to users with role 'user' or 'guest')
     Route::middleware(['role:user,guest'])->group(function () {
         Route::patch("players/{id}", [UserController::class, 'editName']); //modify player's name
-        Route::get("profile", [UserController::class, "profile"]);
+        Route::get("players/profile", [UserController::class, "profile"]);
         Route::post("players/{id}/games", [GameController::class, "throwDices"]); 
     });
 
