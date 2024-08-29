@@ -44,4 +44,28 @@ class GameController extends Controller
             "newGame" => $newGame,
         ], 201);
     }
+    public function deleteGames(Request $request, int $id)
+    {
+        if(!Auth::check()) {
+            return response()->json([
+                "message" => "User not authenticated."
+            ], 401);
+        }
+        $user = User::find($id);
+        if(!$user) {
+            return response()->json([
+                "message" => "User not found."
+            ], 404);
+        }
+        if($user->id !== Auth::id()) {
+            return response()->json([
+                "message" => "You're not authorized to delete this player's game history."
+            ], 403);
+        }
+        $user->games()->delete();
+        return response()->json([
+            "message" => "User's game history has been successfully deleted."
+        ], 200);
+
+    }
 }
