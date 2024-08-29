@@ -24,7 +24,7 @@ Route::group([
     Route::middleware(['role:user,guest'])->group(function () {
         Route::patch("players/{id}", [UserController::class, 'editName']); //modify player's name
         Route::get("profile", [UserController::class, "profile"]);
-        Route::post("players/{id}/games", [GameController::class, "throwDice"]); 
+        Route::post("players/{id}/games", [GameController::class, "throwDices"]); 
     });
 
     
