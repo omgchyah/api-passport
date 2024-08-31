@@ -111,11 +111,22 @@ class GameController extends Controller
                 "message" => "You're not authorized to acces this player's profile."
             ], 403);
         }
+        //Get all games from a player
+        $games = $user->games;
+        //If no games found
+        if($games->isEmpty()) {
+            return response()->json([
+                "user" => $user,
+                "games" => $games,
+                "message" => "No games found for this user."
+            ], 200);
+        }
         // Calculate the success percentage
         $successPercentage = $user->games->first()->getAverageSuccessPercentage($id);
 
         return response()->json([
             "user" => $user,
+            "games" => $games,
             "message" => "Your success percentage is " . $successPercentage . " %"
         ], 200);
     }

@@ -10,8 +10,10 @@ use App\Http\Controllers\Api\GameController;
 })->middleware('auth:api'); */
 
 //Open Routes
-Route::post("players", [UserController::class, "register"]); //crea un jugador/a.
-Route::post("login", [UserController::class, "login"]); //Get player Token
+//crea un jugador/a.
+Route::post("players", [UserController::class, "register"]); 
+//Get player Token
+Route::post("login", [UserController::class, "login"]); 
 
 //Protected Routes
 Route::group([
@@ -22,10 +24,15 @@ Route::group([
     
     // Player-specific routes (only accessible to users with role 'user' or 'guest')
     Route::middleware(['role:user,guest'])->group(function () {
-        Route::patch("players/{id}", [UserController::class, 'editName']); //modify player's name
+        //modify player's name
+        Route::patch("players/{id}", [UserController::class, 'editName']);
+        //Player can access their own profile
         Route::get("players/profile", [UserController::class, "profile"]);
+        //un jugador/a específic realitza una tirada dels daus.
         Route::post("players/{id}/games", [GameController::class, "throwDices"]);
+        //elimina les tirades del jugador/a.
         Route::delete("players/{id}/games", [GameController::class, "deleteGames"]);
+        //retorna el llistat de jugades per un jugador/a.
         Route::get("players/{id}/games", [GameController::class, "getGames"]);
     });
 
