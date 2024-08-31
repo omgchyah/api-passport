@@ -148,5 +148,36 @@ class UserController extends Controller
             ], 400);
         }
     }
+    /**
+     * Get all players with their Success Percentage
+     */
+    public function getAllPlayers(Request $request)
+    {
+        if(!Auth::check()) {
+            return response()->json([
+                "message" => "You're not authorized to access this route."
+            ], 401);
+        }
+        $players = User::with('games')->get();
+
+        if($players->isEmpty()) {
+            return response()->json([
+                "message" => "No players are registered."
+            ], 200);
+        };
+        $playerData = [];
+        foreach($players as $player) {
+            $successPercentage = $player->games->first()->getSuccessPercentage($player->id);
+            $playerData[] = [
+                'id' => $player->id,
+                'username' => $player->username,
+                'email' => $player->email,
+                'successPercentage' => $successPercentage
+            ];
+        }
+        return response()->json([
+            "players" => $playerData,
+        ], 200);
+    }
 
 }
