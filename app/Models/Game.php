@@ -20,4 +20,18 @@ class Game extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getAverageSuccessPercentage(int $id)
+    {
+        //Count all games from user
+        $allGames = Game::where('user_id', $id)->count();
+        //Avoid division by zero
+        if($allGames === 0) {
+            return 0;
+        }
+        //Get total of wins
+        $allWins = Game::where('user_id', $id)->where('result', 'w')->count();
+        //Calculate success percentage
+        return ($allWins * 100) / $allGames;
+    }
 }

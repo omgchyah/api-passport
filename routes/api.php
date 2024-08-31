@@ -26,6 +26,7 @@ Route::group([
         Route::get("players/profile", [UserController::class, "profile"]);
         Route::post("players/{id}/games", [GameController::class, "throwDices"]);
         Route::delete("players/{id}/games", [GameController::class, "deleteGames"]);
+        Route::get("players/{id}/games", [GameController::class, "getGames"]);
     });
 
     

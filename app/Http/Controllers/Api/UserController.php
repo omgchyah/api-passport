@@ -99,7 +99,7 @@ class UserController extends Controller
         // Ensure the user is authenticated
         if (!Auth::check()) {
             return response()->json([
-                "message" => "User not authenticated.",
+                "message" => "User not authenticated."
             ], 401);
         }
 
