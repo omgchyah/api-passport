@@ -11,30 +11,6 @@ use App\Models\Game;
 class GameController extends Controller
 {
     /**
-     * Authorize the user to ensure they are authenticated and can access resources.
-     *
-     * @param int $id
-     * @return \App\Models\User|\Illuminate\Http\JsonResponse
-     */
-    public function authorizeUser(int $id)
-    {
-        if (!Auth::user()) {
-            return response()->json(["message" => "User not authenticated."], 401);
-        }
-
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(["message" => "User not found."], 404);
-        }
-
-        if ($user->id !== Auth::id()) {
-            return response()->json(["message" => "You're not authorized to access this resource."], 403);
-        }
-
-        return $user;
-    }
-
-    /**
      * Handle dice throw action and create a new game record.
      *
      * @param \Illuminate\Http\Request $request
@@ -43,11 +19,20 @@ class GameController extends Controller
      */
     public function throwDices(Request $request, int $id)
     {
-        $user = $this->authorizeUser($id);
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            return response()->json(["message" => "User not authenticated."], 401);
+        }
 
-        // Check if the response is a JSON error response and return if so
-        if ($user instanceof \Illuminate\Http\JsonResponse) {
-            return $user;
+        // Check if the user exists
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(["message" => "User not found."], 404);
+        }
+
+        // Check if the authenticated user has permission to perform this action
+        if ($user->id !== Auth::id()) {
+            return response()->json(["message" => "You're not authorized to access this resource."], 403);
         }
 
         // Generate dice rolls
@@ -78,11 +63,20 @@ class GameController extends Controller
      */
     public function deleteGames(Request $request, int $id)
     {
-        $user = $this->authorizeUser($id);
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            return response()->json(["message" => "User not authenticated."], 401);
+        }
 
-        // Check if the response is a JSON error response and return if so
-        if ($user instanceof \Illuminate\Http\JsonResponse) {
-            return $user;
+        // Check if the user exists
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(["message" => "User not found."], 404);
+        }
+
+        // Check if the authenticated user has permission to perform this action
+        if ($user->id !== Auth::id()) {
+            return response()->json(["message" => "You're not authorized to access this resource."], 403);
         }
 
         // Delete all games associated with the user
