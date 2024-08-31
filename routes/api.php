@@ -20,6 +20,7 @@ Route::group([
     "middleware" => ["auth:api"]
 ], function() {
 
+    //Destroy token
     Route::get("logout", [UserController::class, "logout"]);
     
     // Player-specific routes (only accessible to users with role 'user' or 'guest')
@@ -36,55 +37,12 @@ Route::group([
         Route::get("players/{id}/games", [GameController::class, "getGames"]);
     });
 
+    //Admin-specific routes
+    Route::middleware(['role:admin'])->group(function() {
+        Route::get("players", [UserController::class, "getAllPlayers"]);
+        Route::get("players/ranking", [UserController::class, "getRanking"]);
+        Route::get("players/ranking/loser", [UserController::class, "getLoser"]);
+        Route::get("players/ranking/winner", [UserController::class, "getWinner"]);
+    });
     
 });
-
-    // Player-specific routes
-    /*/POST /players:
-
-    Description: Create a new player.
-    Role: Accessible to anyone (open route) to allow new player registration.
-
-PUT /players/{id}:
-
-    Description: Update the name of the player.
-    Role: Accessible to the specific player (who owns the account).
-
-POST /players/{id}/games/:
-
-    Description: A specific player rolls the dice.
-    Role: Accessible only to the player making the request.
-
-DELETE /players/{id}/games:
-
-    Description: Delete all the rolls of a specific player.
-    Role: Accessible only to the player making the request.
-
-GET /players/{id}/games:
-
-    Description: Return the list of games (dice rolls) for a specific player.
-    Role: Accessible only to the player making the request.
-    */
-
-
-
-    //Admin-specific routes
-/*     GET /players:
-
-    Description: Return the list of all players in the system with their average success rate.
-    Role: Accessible only to admins.
-
-GET /players/ranking:
-
-    Description: Return the average ranking (success rate) of all players in the system.
-    Role: Accessible only to admins.
-
-GET /players/ranking/loser:
-
-    Description: Return the player with the worst success rate.
-    Role: Accessible only to admins.
-
-GET /players/ranking/winner:
-
-    Description: Return the player with the best success rate.
-    Role: Accessible only to admins. */
