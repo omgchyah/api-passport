@@ -130,5 +130,4 @@ class GameController extends Controller
             "message" => "Your success percentage is " . $successPercentage . " %"
         ], 200);
     }
-
 }
