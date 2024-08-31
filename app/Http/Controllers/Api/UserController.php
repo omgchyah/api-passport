@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    /**
+     * Create a new player, either user or guest
+     */
     // POST [username, email, password]
     public function register(Request $request)
     {
@@ -34,6 +37,9 @@ class UserController extends Controller
             "user" => $user
         ], 201);
     }
+    /**
+     * Get a token
+     */
     //POST [email, password]
     public function login(Request $request)
     {
@@ -79,6 +85,9 @@ class UserController extends Controller
             ], 401);
         }
     }
+    /**
+     * Destroy token
+     */
     //GET [Auth: Token]
     public function logout()
     {
@@ -93,7 +102,9 @@ class UserController extends Controller
                 "message" => "Logout ssuccessful.",
             ], 200);
     }
-
+    /**
+     * Edit a player's username
+     */
     public function editName(Request $request, int $id)
     {
         // Ensure the user is authenticated
