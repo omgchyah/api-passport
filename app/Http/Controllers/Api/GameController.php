@@ -95,7 +95,7 @@ class GameController extends Controller
      */
     public function getGames(Request $request, int $id)
     {
-        if(!Auth::user()) {
+        if(!Auth::check()) {
             return response()->json([
                 "message" => "User not authenticated."
             ], 401);
@@ -111,6 +111,13 @@ class GameController extends Controller
                 "message" => "You're not authorized to acces this player's profile."
             ], 403);
         }
+        // Calculate the success percentage
+        $successPercentage = $user->games->first()->getAverageSuccessPercentage($id);
+
+        return response()->json([
+            "user" => $user,
+            "message" => "Your success percentage is " . $successPercentage . " %"
+        ], 200);
     }
 
 }
