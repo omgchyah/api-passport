@@ -179,5 +179,12 @@ class UserController extends Controller
             "players" => $playerData,
         ], 200);
     }
+    /**
+     * Get the average success percentage of all players
+     */
+    public function getRanking()
+    {
+        
+    }
 
 }

@@ -88,4 +88,24 @@ class User extends Authenticatable
 
         return $totalGames > 0 ? ($totalWins * 100) / $totalGames : 0.0;
     }
+    public function calculateTotalSuccessPercentage()
+    {
+        $players = User::with('games')->get();
+    
+        $totalWins = 0;
+        $totalGames = 0;
+    
+        foreach ($players as $player) {
+            $totalGames += $player->games->count();
+            $totalWins += $player->games->where('result', 'w')->count();
+        }
+    
+        // Avoid division by zero if there are no games
+        if ($totalGames === 0) {
+            return 0;
+        }
+    
+        return ($totalWins * 100) / $totalGames;
+    }
+    
 }
