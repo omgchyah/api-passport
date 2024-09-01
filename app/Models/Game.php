@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Game extends Model
 {
@@ -35,5 +36,5 @@ class Game extends Model
         //Calculate success percentage
         return ($allWins * 100) / $allGames;
     }
-    public function getTotal
+    //public function getTotal
 }

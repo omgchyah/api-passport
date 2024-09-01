@@ -167,7 +167,7 @@ class UserController extends Controller
         };
         $playerData = [];
         foreach($players as $player) {
-            $successPercentage = $player->games->first()->getSuccessPercentage($player->id);
+            $successPercentage = $player->games->getSuccessPercentage($player->id);
             $playerData[] = [
                 'id' => $player->id,
                 'username' => $player->username,
