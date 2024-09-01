@@ -80,4 +80,12 @@ class User extends Authenticatable
     {
         return $this->role === $role;
     }
+
+    public function calculateSuccessPercentage(): float
+    {
+        $totalGames = $this->games->count();
+        $totalWins = $this->games->where('result', 'w')->count();
+
+        return $totalGames > 0 ? ($totalWins * 100) / $totalGames : 0.0;
+    }
 }

@@ -158,7 +158,7 @@ class UserController extends Controller
                 "message" => "You're not authorized to access this route."
             ], 401);
         }
-        $players = User::with('games')->get();
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
 
         if($players->isEmpty()) {
             return response()->json([
@@ -167,7 +167,7 @@ class UserController extends Controller
         };
         $playerData = [];
         foreach($players as $player) {
-            $successPercentage = $player->games->getSuccessPercentage($player->id);
+            $successPercentage = $player->calculateSuccessPercentage();
             $playerData[] = [
                 'id' => $player->id,
                 'username' => $player->username,

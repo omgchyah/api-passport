@@ -36,5 +36,5 @@ class Game extends Model
         //Calculate success percentage
         return ($allWins * 100) / $allGames;
     }
-    //public function getTotal
+    
 }
