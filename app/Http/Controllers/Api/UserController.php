@@ -163,7 +163,7 @@ class UserController extends Controller
         if($players->isEmpty()) {
             return response()->json([
                 "message" => "No players are registered."
-            ], 200);
+            ], 204);
         };
         $playerData = [];
         foreach($players as $player) {
@@ -184,7 +184,39 @@ class UserController extends Controller
      */
     public function getRanking()
     {
-        
+        if(!Auth::check()) {
+            return response()->json([
+                "message" => "You're not authorized to access this route."
+            ], 401);
+        }
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
+
+        if($players->isEmpty()) {
+            return response()->json([
+                "message" => "No players are registered."
+            ], 204);
+        }
+        // Directly call the static method without instantiating the User class
+        $totalSuccessAverage = User::calculateTotalSuccessPercentage();
+
+        return response()->json([
+            "totalAverageSuccessPercentage" => $totalSuccessAverage,
+        ], 200);
+
+    }
+    /**
+     * Get the winner
+     */
+    public function getWinner()
+    {
+
+    }
+    /**
+     * Get the loser
+     */
+    public function getLoser()
+    {
+
     }
 
 }

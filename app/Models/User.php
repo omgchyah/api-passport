@@ -60,16 +60,16 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-
+    
         static::saving(function ($model) {
             if (is_null($model->username)) {
                 $model->username = 'anonymous';
             }
-
-            //Unique username bsides anonymous
+    
+            // Unique username besides anonymous
             if ($model->username !== 'anonymous') {
-                $existingUser = static::where('username', $model->username)->first();
-                if ($existingUser && $existingUser->id !== $model->id) {
+                $existingUser = static::where('username', $model->username)->where('id', '!=', $model->id)->first();
+                if ($existingUser) {
                     throw new \Exception("The username '" . $model->username . "' is already taken.");
                 }
             }
@@ -88,7 +88,7 @@ class User extends Authenticatable
 
         return $totalGames > 0 ? ($totalWins * 100) / $totalGames : 0.0;
     }
-    public function calculateTotalSuccessPercentage()
+    public static function calculateTotalSuccessPercentage()
     {
         $players = User::with('games')->get();
     
