@@ -15,6 +15,11 @@ class UserController extends Controller
      * Create a new player, either user or guest
      */
     // POST [username, email, password]
+    /**
+     * Summary of register
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         //Validation

@@ -81,6 +81,10 @@ class User extends Authenticatable
         return $this->role === $role;
     }
 
+    /**
+     * Summary of calculateSuccessPercentage
+     * @return float
+     */
     public function calculateSuccessPercentage(): float
     {
         $totalGames = $this->games->count();
@@ -88,9 +92,13 @@ class User extends Authenticatable
 
         return $totalGames > 0 ? ($totalWins * 100) / $totalGames : 0.0;
     }
-    public static function calculateTotalSuccessPercentage()
+    /**
+     * Summary of calculateTotalSuccessPercentage
+     * @return float|int
+     */
+    public static function calculateTotalSuccessPercentage(): float
     {
-        $players = User::with('games')->get();
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
     
         $totalWins = 0;
         $totalGames = 0;
@@ -100,12 +108,55 @@ class User extends Authenticatable
             $totalWins += $player->games->where('result', 'w')->count();
         }
     
-        // Avoid division by zero if there are no games
-        if ($totalGames === 0) {
-            return 0;
-        }
-    
-        return ($totalWins * 100) / $totalGames;
+        // Avoid division by zero if there are no games    
+        return $totalGames === 0 ? 0.0 : ($totalWins * 100) / $totalGames;
     }
-    
+    /**
+     * Summary of getWinner
+     * @return User[]
+     */
+    public static function getWinner()
+    {
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
+
+        $winners = [];
+        $highestSuccessPercentage = -1;
+
+        foreach($players as $player) {
+            $successPercentage = $player->calculateSuccessPercentage();
+            if($successPercentage > $highestSuccessPercentage) {
+                $highestSuccessPercentage = $successPercentage;
+                $winners = [$player];
+            } elseif($successPercentage === $highestSuccessPercentage) {
+                $winners[] = $player;
+            }
+        }
+
+        return $winners;
+    }
+    /**
+     * Summary of getLoser
+     * @return User[]
+     */
+    public static function getLoser()
+    {
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
+
+        $losers = [];
+        $lowestSuccessPercentage = 101;
+
+        foreach($players as $player) {
+            $successPercentage = $player->calculateSuccessPercentage();
+
+            if($successPercentage < $lowestSuccessPercentage) {
+                $lowestSuccessPercentage = $successPercentage;
+                $losers = [$player];
+            } elseif($successPercentage === $lowestSuccessPercentage) {
+                $losers[] = $player;
+            }
+        }
+
+        return $losers;
+    }
+
 }
