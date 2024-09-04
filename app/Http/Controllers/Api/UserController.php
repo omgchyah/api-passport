@@ -185,7 +185,8 @@ class UserController extends Controller
         ], 200);
     }
     /**
-     * Get the average success percentage of all players
+     * Summary of getRanking: Get the average success percentage of all players
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getRanking()
     {
@@ -214,6 +215,31 @@ class UserController extends Controller
      */
     public function getWinner()
     {
+        if(!Auth::check()) {
+            return response()->json([
+                "message" => "You're not authorized to access this route."
+            ], 401);
+        }
+
+        $winners = User::getWinner();
+
+        if($winners === null) {
+            return response()->json([
+                "message" => "No players are registered."
+            ], 204);
+        } elseif(sizeof($winners) === 1) {
+            return response()->json([
+                "winner" => $winners,
+                "successPercentage" => $winners[0]->calculateSuccessPercentage()
+            ], 200);
+        } else {
+            return response()->json([
+                "winners" => $winners,
+                "successPercentage" => $winners[0]->calculateSuccessPercentage()
+            ], 200);
+        }
+
+
 
     }
     /**
