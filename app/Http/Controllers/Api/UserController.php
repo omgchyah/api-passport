@@ -12,11 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Create a new player, either user or guest
-     */
-    // POST [username, email, password]
-    /**
-     * Summary of register
+     * Register a new user
+     * POST [username, email, password]
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -43,9 +40,11 @@ class UserController extends Controller
         ], 201);
     }
     /**
-     * Get a token
+     * User login and get token
+     * POST [email, password]
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
-    //POST [email, password]
     public function login(Request $request)
     {
         //Validation
@@ -76,24 +75,37 @@ class UserController extends Controller
             ], 401);
         }
     }
-    // GET [Auth: Token]
-    public function profile()
+    public function authenticateUser()
     {
-        if(Auth::check()) {
-            return response()->json([
-                "data" => Auth::user(),
-            ], 200);
-        } else {
-            // Return a 401 Unauthorized response if the user is not authenticated
+        if (!Auth::check()) {
             return response()->json([
                 "message" => "User not authenticated.",
             ], 401);
         }
+        return null;
+    }
+
+    /**
+     * Get the authenticated user's profile
+     * GET [Auth: Token]
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function profile()
+    {
+        $authResponse = $this->authenticateUser();
+        if($authResponse) {
+            return $authResponse;
+        }
+
+        return response()->json([
+            "data" => Auth::user(),
+        ], 200);
     }
     /**
      * Destroy token
+     * GET [Auth: Token]
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
-    //GET [Auth: Token]
     public function logout()
     {
         // Ensure the user is authenticated
@@ -109,6 +121,9 @@ class UserController extends Controller
     }
     /**
      * Edit a player's username
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function editName(Request $request, int $id)
     {
@@ -155,6 +170,8 @@ class UserController extends Controller
     }
     /**
      * Get all players with their Success Percentage
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getAllPlayers(Request $request)
     {
@@ -185,7 +202,7 @@ class UserController extends Controller
         ], 200);
     }
     /**
-     * Summary of getRanking: Get the average success percentage of all players
+     * Get the average success percentage of all players
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getRanking()
@@ -212,6 +229,7 @@ class UserController extends Controller
     }
     /**
      * Get the winner
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getWinner()
     {
@@ -223,31 +241,56 @@ class UserController extends Controller
 
         $winners = User::getWinner();
 
-        if($winners === null) {
+        if (empty($winners)) {
             return response()->json([
                 "message" => "No players are registered."
             ], 204);
-        } elseif(sizeof($winners) === 1) {
-            return response()->json([
-                "winner" => $winners,
-                "successPercentage" => $winners[0]->calculateSuccessPercentage()
-            ], 200);
-        } else {
-            return response()->json([
-                "winners" => $winners,
-                "successPercentage" => $winners[0]->calculateSuccessPercentage()
-            ], 200);
         }
 
+        $response = [
+            "successPercentage" => $winners[0]->calculateSuccessPercentage()
+        ];
 
+        if (count($winners) === 1) {
+            $response["winner"] = $winners;
+        } else {
+            $response["winners"] = $winners;
+        }
+
+        return response()->json($response, 200);
 
     }
     /**
-     * Get the loser
+     * Get the loser(s)
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getLoser()
     {
+        if(!Auth::check()) {
+            return response()->json([
+                "message" => "You're not authorized to access this route."
+            ], 401);
+        }
 
+        $losers = User::getLosers();
+
+        if (empty($losers)) {
+            return response()->json([
+                "message" => "No players are registered."
+            ], 204);
+        }
+
+        $response = [
+            "successPercentage" => $losers[0]->calculateSuccessPercentage()
+        ];
+
+        if (count($losers) === 1) {
+            $response["loser"] = $losers;
+        } else {
+            $response["losers"] = $losers;
+        }
+
+        return response()->json($response, 200);
     }
 
 }
