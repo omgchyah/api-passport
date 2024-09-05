@@ -22,7 +22,7 @@ class Game extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getSuccessPercentage(int $id): float
+    public static function getSuccessPercentage(int $id): float
     {
         //Count all games from user
         $games = Game::where('user_id', $id);

@@ -92,11 +92,6 @@ class UserController extends Controller
      */
     public function profile()
     {
-        $authResponse = $this->authenticateUser();
-        if($authResponse) {
-            return $authResponse;
-        }
-
         return response()->json([
             "data" => Auth::user(),
         ], 200);
@@ -108,15 +103,9 @@ class UserController extends Controller
      */
     public function logout()
     {
-        // Ensure the user is authenticated
-        if (!Auth::check()) {
-            return response()->json([
-                "message" => "User not authenticated.",
-            ], 401);
-        }
         Auth::user()->tokens()->delete();
         return response()->json([
-                "message" => "Logout ssuccessful.",
+                "message" => "Logout successful.",
             ], 200);
     }
     /**
@@ -127,13 +116,6 @@ class UserController extends Controller
      */
     public function editName(Request $request, int $id)
     {
-        // Ensure the user is authenticated
-        if (!Auth::check()) {
-            return response()->json([
-                "message" => "User not authenticated."
-            ], 401);
-        }
-
         // Validate the new username
         $validatedData = $request->validate([
             "username" => "nullable|string|min:3",
@@ -175,11 +157,6 @@ class UserController extends Controller
      */
     public function getAllPlayers(Request $request)
     {
-        if(!Auth::check()) {
-            return response()->json([
-                "message" => "You're not authorized to access this route."
-            ], 401);
-        }
         $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
 
         if($players->isEmpty()) {
@@ -207,11 +184,6 @@ class UserController extends Controller
      */
     public function getRanking()
     {
-        if(!Auth::check()) {
-            return response()->json([
-                "message" => "You're not authorized to access this route."
-            ], 401);
-        }
         $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
 
         if($players->isEmpty()) {
@@ -223,7 +195,7 @@ class UserController extends Controller
         $totalSuccessAverage = User::calculateTotalSuccessPercentage();
 
         return response()->json([
-            "totalAverageSuccessPercentage" => $totalSuccessAverage,
+            "totalAverageSuccessPercentage" => $totalSuccessAverage . "%",
         ], 200);
 
     }
@@ -233,12 +205,6 @@ class UserController extends Controller
      */
     public function getWinner()
     {
-        if(!Auth::check()) {
-            return response()->json([
-                "message" => "You're not authorized to access this route."
-            ], 401);
-        }
-
         $winners = User::getWinner();
 
         if (empty($winners)) {
@@ -266,13 +232,7 @@ class UserController extends Controller
      */
     public function getLoser()
     {
-        if(!Auth::check()) {
-            return response()->json([
-                "message" => "You're not authorized to access this route."
-            ], 401);
-        }
-
-        $losers = User::getLosers();
+        $losers = User::getLoser();
 
         if (empty($losers)) {
             return response()->json([

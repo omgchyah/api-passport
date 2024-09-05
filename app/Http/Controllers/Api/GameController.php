@@ -112,7 +112,7 @@ class GameController extends Controller
             ], 403);
         }
         //Get all games from a player
-        $games = $user->games;
+        $games = $user->games()->orderBy('created_at', 'desc')->get();
         //If no games found
         if($games->isEmpty()) {
             return response()->json([
@@ -122,12 +122,12 @@ class GameController extends Controller
             ], 200);
         }
         // Calculate the success percentage
-        $successPercentage = $user->games->first()->getAverageSuccessPercentage($id);
+        $successPercentage = Game::getSuccessPercentage($id);
 
         return response()->json([
             "user" => $user,
-            "games" => $games,
-            "message" => "Your success percentage is " . $successPercentage . " %"
+            "successPercentage" => "Your success percentage is " . $successPercentage . " %",
+            "games" => $games
         ], 200);
     }
 }
