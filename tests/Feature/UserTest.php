@@ -21,7 +21,10 @@ class UserTest extends TestCase
 
         $response->assertStatus(200);
     }
-
+    /**
+     * Summary of test_player_can_be_created
+     * @return void
+     */
     public function test_player_can_be_created()
     {
         $this->withoutExceptionHandling();
