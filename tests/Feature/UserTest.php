@@ -50,4 +50,20 @@ class UserTest extends TestCase
         $this->assertTrue(Hash::check('password', $user->password));
         $this->assertEquals($user->role, 'user');
     }
+    public function test_player_can_login()
+    {
+        $response = $this->post('api/login', [
+            'email' => 'user@example.com',
+            "password" => 'password'
+        ]);
+
+        $response->assertStatus(200);
+
+        $user = User::where("email", "user@example.com")->first();
+
+
+        $this->assertTrue(Hash::check('password', $user->password));
+
+
+    }
 }

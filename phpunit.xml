@@ -23,13 +23,9 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
         
-        <!-- These settings will use the Docker MySQL service -->
-        <env name="DB_CONNECTION" value="mysql"/>
-        <env name="DB_HOST" value="mysql"/> <!-- This matches the service name in docker-compose.yml -->
-        <env name="DB_PORT" value="3306"/>
-        <env name="DB_DATABASE" value="testing"/> <!-- Ensure this database is created in your MySQL container -->
-        <env name="DB_USERNAME" value="sail"/>
-        <env name="DB_PASSWORD" value="password"/>
+        <!-- Use SQLite in-memory database for testing -->
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
 
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
@@ -37,5 +33,4 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
-
 </phpunit>
