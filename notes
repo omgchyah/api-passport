@@ -54,4 +54,7 @@ sail php artisan passport:client --personal
     use HasApiTokens, HasFactory, Notifiable; 
 
 
-
+To test project:
+composer install
+luego php artisan keys:generate
+y por último php artisan passport:keys
