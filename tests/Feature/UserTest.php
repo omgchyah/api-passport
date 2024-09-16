@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Game;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\Artisan;
@@ -229,6 +230,11 @@ class UserTest extends TestCase
     {
         $token = $this->admin->createToken('adminToken')->accessToken;
 
+        // Create some games for different users
+        Game::factory()->create(['user_id' => $this->user->id]);
+        Game::factory()->create(['user_id' => $this->guest->id]);
+
+        // Admin requests to see the loser
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
         ])->get('api/players/ranking/loser');
@@ -269,42 +275,43 @@ class UserTest extends TestCase
     public function test_admin_can_see_winner()
     {
         $token = $this->admin->createToken('adminToken')->accessToken;
-    
+
+        // Create some games for different users
+        Game::factory()->create(['user_id' => $this->user->id, 'result' => 'w']);
+        Game::factory()->create(['user_id' => $this->guest->id, 'result' => 'l']);
+
+        // Admin requests to see the winner
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
         ])->get('api/players/ranking/winner');
-    
+
         $response->assertStatus(200);
 
-        // Decode the JSON response
-        $responseData = $response->json();
-
-        // Check for either single 'winner' or multiple 'winners'
-        if (array_key_exists('winner', $responseData)) {
-            // Assert structure for single winner
-            $response->assertJsonStructure([
-                'successPercentage',
-                'winner' => [
+        // Assert the structure of the response to match the actual JSON
+        $response->assertJsonStructure([
+            'successPercentage',
+            'winner' => [
+                '*' => [  // Winner is an array
                     'id',
                     'username',
+                    'role',
                     'email',
-                ]
-            ]);
-        } elseif (array_key_exists('winners', $responseData)) {
-            // Assert structure for multiple winners
-            $response->assertJsonStructure([
-                'successPercentage',
-                'winners' => [
-                    '*' => [
-                        'id',
-                        'username',
-                        'email',
+                    'created_at',
+                    'updated_at',
+                    'games' => [
+                        '*' => [  // Nested games array inside winner
+                            'id',
+                            'user_id',
+                            'dice1',
+                            'dice2',
+                            'result',
+                            'created_at',
+                            'updated_at'
+                        ]
                     ]
                 ]
-            ]);
-        } else {
-            $this->fail('Neither "winner" nor "winners" key found in the response.');
-        }  
+            ]
+        ]);
     }
     #[Test]
     public function test_user_cant_see_all_players()
