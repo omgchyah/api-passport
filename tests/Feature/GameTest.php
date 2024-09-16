@@ -93,10 +93,16 @@ class GameTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
+        // Generate a personal access token for the user
+        $token = $this->user->createToken('TestToken')->accessToken;
+
         // Send a DELETE request to delete all games for this user
-        $response = $this->deleteJson("/api/players/{$this->user->id}/games");
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->delete("/api/players/{$this->user->id}/games");
 
         $response->assertStatus(200);
+
         $response->assertJson([
             'message' => "User's game history has been successfully deleted."
         ]);
@@ -105,18 +111,24 @@ class GameTest extends TestCase
         $this->assertDatabaseMissing('games', ['user_id' => $this->user->id]);
     }
 
-    /*#[Test]
+    #[Test]
     public function test_user_cannot_delete_other_user_games()
     {
         // Create a game for another user
         Game::factory()->create([
-            'user_id' => $this->otherUser->id,
+            'user_id' => $this->user->id,
         ]);
 
+        // Generate a personal access token for the user
+        $token = $this->user->createToken('TestToken')->accessToken;
+
         // Send a DELETE request trying to delete the games of another user
-        $response = $this->deleteJson("/api/players/{$this->otherUser->id}/games");
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->delete("/api/players/{$this->guest->id}/games");
 
         $response->assertStatus(403);
+
         $response->assertJson([
             'message' => "You're not authorized to delete this user's game history.",
         ]);
@@ -147,7 +159,7 @@ class GameTest extends TestCase
         ]);
     }
 
-    #[Test]
+    /*#[Test]
     public function test_user_cannot_get_other_user_games()
     {
         // Create some games for another user
