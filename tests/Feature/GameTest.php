@@ -142,10 +142,16 @@ class GameTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
+        // Generate a personal access token for the user
+        $token = $this->user->createToken('TestToken')->accessToken;
+
         // Send a GET request to fetch the games
-        $response = $this->getJson("/api/players/{$this->user->id}/games");
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->get("/api/players/{$this->user->id}/games");
 
         $response->assertStatus(200);
+        
         $response->assertJsonStructure([
             'user' => [
                 'id', 'username', 'email'
