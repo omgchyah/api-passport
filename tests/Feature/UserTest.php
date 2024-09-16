@@ -235,6 +235,36 @@ class UserTest extends TestCase
         ])->get('api/players/ranking/loser');
 
         $response->assertStatus(200);
+
+        // Decode the JSON response
+        $responseData = $response->json();
+
+        // Check for either single 'loser' or multiple 'losers'
+        if (array_key_exists('loser', $responseData)) {
+            // Assert structure for single loser
+            $response->assertJsonStructure([
+                'successPercentage',
+                'loser' => [
+                    'id',
+                    'username',
+                    'email',
+                ]
+            ]);
+        } elseif (array_key_exists('losers', $responseData)) {
+            // Assert structure for multiple losers
+            $response->assertJsonStructure([
+                'successPercentage',
+                'losers' => [
+                    '*' => [
+                        'id',
+                        'username',
+                        'email',
+                    ]
+                ]
+            ]);
+        } else {
+            $this->fail('Neither "loser" nor "losers" key found in the response.');
+        }
     }
     #[Test]
     public function test_admin_can_see_winner()
@@ -246,16 +276,37 @@ class UserTest extends TestCase
         ])->get('api/players/ranking/winner');
     
         $response->assertStatus(200);
-        
+
+        // Decode the JSON response
+        $responseData = $response->json();
+
+        // Check for either single 'winner' or multiple 'winners'
+        if (array_key_exists('winner', $responseData)) {
+            // Assert structure for single winner
+            $response->assertJsonStructure([
+                'successPercentage',
+                'winner' => [
+                    'id',
+                    'username',
+                    'email',
+                ]
+            ]);
+        } elseif (array_key_exists('winners', $responseData)) {
+            // Assert structure for multiple winners
+            $response->assertJsonStructure([
+                'successPercentage',
+                'winners' => [
+                    '*' => [
+                        'id',
+                        'username',
+                        'email',
+                    ]
+                ]
+            ]);
+        } else {
+            $this->fail('Neither "winner" nor "winners" key found in the response.');
+        }  
     }
-
-
-
-
-/*                 //Admin-specific routes
-    Route::middleware(['role:admin'])->group(function[UserController::class, "getRanking"]);
-        Route::get("players/ranking/loser", [UserController::class, "getLoser"]);
-        Route::get("players/ranking/winner", [UserController::class, "getWinner"]); */
-    
+    #[Test]
 
 }
