@@ -81,9 +81,19 @@ class UserTest extends TestCase
         $response = $this->post('api/players', [
             'username' => null,
             'email' => $email,
-            'password' =>
-
+            'password' => Hash::make('password')
         ]);
+
+        $response->assertStatus(201);
+
+        //Count the newly registered user from the database
+        $this->assertCount(4, User::all());
+
+        $user = User::where('email', $email)->first();
+
+        $this->assertNotNull($user);
+        $this->assertEquals($user->username, 'anonymous');
+        $this->assertEquals($user->role, 'guest');
     }
     #[Test]
     public function test_player_can_login()
@@ -109,17 +119,65 @@ class UserTest extends TestCase
         $this->assertNotNull($responseData['token'], "The token is null");
     }
     #[Test]
-    public function test_player_can_modify
+    public function test_player_can_modify_name()
+    {
+        // Generate a personal access token for the user
+        $token = $this->user->createToken('TestToken')->accessToken;
+
+        // New username to update
+        $newUsername = 'Updated Test User';
+
+        // Send a PATCH request to update the username with a Bearer token
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->patch("api/players/{$this->user->id}", [
+            'username' => $newUsername,
+        ]);
+
+        // Assert that the response status is 200 (OK)
+        $response->assertStatus(200);
+
+        // Check that the response contains the success message
+        $response->assertJson([
+            'message' => 'Username changed successfully.',
+        ]);
+
+        // Refresh the user instance to get the updated values from the database
+        $this->user->refresh();
+
+        // Assert that the username was updated in the database
+        $this->assertEquals($newUsername, $this->user->username);
+
+    }
+    #[Test]
+    public function test_player_can_access_profile()
+    {
+        // Create a token for the authenticated user
+        $token = $this->user->createToken('TestToken')->accessToken;
+
+        // Send a GET request to the profile route with the Bearer token
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->get('api/players/profile');
+
+        // Assert that the response status is 200 (OK)
+        $response->assertStatus(200);
+
+        // Assert that the response contains the user's profile data
+        $response->assertJson([
+            'data' => [
+                'id' => $this->user->id,
+                'username' => $this->user->username,
+                'role' => $this->user->role,
+                'email' => $this->user->email,
+                'email_verified_at' => $this->user->email_verified_at->toISOString(),
+                'created_at' => $this->user->created_at->toISOString(),
+                'updated_at' => $this->user->updated_at->toISOString(),
+            ]
+        ]);
+    }
 
 
-/*             //modify player's name
-            Route::patch("players/{id}", [UserController::class, 'editName']);
-
-
-
-
-            //Player can access their own profile
-            Route::get("players/profile", [UserController::class, "profile"]); */
 
 /*                 //Admin-specific routes
     Route::middleware(['role:admin'])->group(function() {
