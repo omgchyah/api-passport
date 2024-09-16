@@ -127,7 +127,7 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
 
 ### 2. Use the Accept: application/json Header
 
-    #For all requests, make sure to include the Accept: application/json header in Postman. This ensures the API returns JSON responses.
+    ❗❗❗For all requests, make sure to include the Accept: application/json header in Postman. This ensures the API returns JSON responses.
 
 ### 3. Example Postman Request
 
