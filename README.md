@@ -6,19 +6,19 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
 
 # Requirements 🔧
 
-# Docker-Based Setup
+# Docker-Based Setup:
 
     Docker
-    Docker Compose
+        Docker Compose
 
-# Composer-Based Setup
+# Composer-Based Setup:
 
     PHP 8.1 or higher
     Composer
     MySQL
   
 
-# Running the Application with Composer (Without Docker) 🛠️
+### 🛠️ Running the Application with Composer 🎼(Without Docker) 
 
     This option uses PHP, Composer, and MySQL directly on your local machine.
 
@@ -43,12 +43,13 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
 
     env
 
+    # Database Configuration
     DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=your_database_name
-    DB_USERNAME=your_database_user
-    DB_PASSWORD=your_database_password
+    DB_HOST=127.0.0.1               # Use localhost or the IP address of your MySQL server
+    DB_PORT=3306                    # Default MySQL port
+    DB_DATABASE=your_database_name   # Replace with the name of your database
+    DB_USERNAME=your_database_user   # Replace with your MySQL username
+    DB_PASSWORD=your_database_password  # Replace with your MySQL password
 
     # Step 4: Generate Application Key
 
@@ -76,7 +77,7 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
 
     Your application will now be available at http://localhost:8000.
 
-# Running the Application with Docker #
+### 🐳 Running the Application with Docker
 
     This option uses Docker and Laravel Sail to manage the environment.
 
@@ -111,17 +112,17 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
 
     ./vendor/bin/sail artisan passport:install
 
- # API Endpoints ⚙️
+ ### 🛣️ API Endpoints
 
     Using Postman, always add the option to Headers:
 
     Accept    application/json
 
-# Here are the key API routes for the Laravel Passport-based authentication system:
+# 🔑 Here are the key API routes for the Laravel Passport-based authentication system:
 
     Authentication
 
-    Register a new player: POST /api/players
+    # Register a new player: POST /api/players
 
         Example body:
 
@@ -132,7 +133,7 @@ You can run this project either with Docker (using Laravel Sail) or without Dock
       "password": "password"
     }
 
-Login and get a token: POST /api/login
+    # Login and get a token: POST /api/login
 
     Example body:
 
@@ -143,13 +144,13 @@ Login and get a token: POST /api/login
           "password": "password"
         }
 
-    Logout and revoke token: GET /api/logout
+    # Logout and revoke token: GET /api/logout
 
-# Protected Player Routes (With Bearer Token)
+# 🔒 Protected Player Routes (With Bearer Token)
 
     These routes require a valid bearer token in the Authorization header.
 
-    Update player's name: PATCH /api/players/{id}
+    # Update player's name: PATCH /api/players/{id}
         Example body:
 
         json
@@ -158,34 +159,34 @@ Login and get a token: POST /api/login
           "username": "NewUsername"
         }
 
-    Get current player's profile: GET /api/players/profile
+    # Get current player's profile: GET /api/players/profile
 
-    Throw dice: POST /api/players/{id}/games
+    # Throw dice: POST /api/players/{id}/games
         Simulates a dice throw for the specified player.
 
-    Get player's games: GET /api/players/{id}/games
+    # Get player's games: GET /api/players/{id}/games
         Returns a list of dice games for the specified player.
 
-    Delete player's games: DELETE /api/players/{id}/games
+    # Delete player's games: DELETE /api/players/{id}/games
         Deletes all game history for the specified player.
 
-# Admin Routes (Admin Only)
+# 👑 Admin Routes (Admin Only) 👑
 
 These routes are only accessible to users with the admin role.
 
-    Get all players: GET /api/players
-    Get player ranking: GET /api/players/ranking
-    Get the player with the most losses: GET /api/players/ranking/loser
-    Get the player with the most wins: GET /api/players/ranking/winner
+    # Get all players: GET /api/players
+    # Get player ranking: GET /api/players/ranking
+    # Get the player with the most losses: GET /api/players/ranking/loser
+    # Get the player with the most wins: GET /api/players/ranking/winner
 
- # Running Tests ✅
+ # ✅ Running Tests ✅
 
 You can run the feature and unit tests for the API in two ways depending on your setup:
 
-# With Docker (Using Laravel Sail)
+### 🐳 With Docker (Using Laravel Sail)
 
 ./vendor/bin/sail artisan test
 
-# Without Docker (Using Composer)
+### 🎼 Without Docker (Using Composer)
 
 php artisan test
