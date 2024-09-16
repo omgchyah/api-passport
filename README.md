@@ -4,30 +4,30 @@ This is a Laravel 11 API using PHP, MySQL, and Laravel Passport for authenticati
 
 You can run this project either with Docker (using Laravel Sail) or without Docker using Composer and your local PHP setup.
 
-# Requirements 🔧
+## Requirements 🔧
 
-# 🐳 Docker-Based Setup:
+### 🐳 Docker-Based Setup:
 
     Docker
-        Docker Compose
+    Docker Compose
 
-# 🎼 Composer-Based Setup:
+### 🎼 Composer-Based Setup:
 
     PHP 8.1 or higher
     Composer
     MySQL
   
 
-### 🛠️ Running the Application with Composer 🎼(Without Docker) 
+## 🛠️ Running the Application with Composer 🎼(Without Docker) 
 
     This option uses PHP, Composer, and MySQL directly on your local machine.
 
-# Step 1: Clone the Repository
+### Step 1: Clone the Repository
 
     git clone -b develop https://github.com/omgchyah/api-passport.git
     cd api-passport
 
-# Step 2: Install Composer Dependencies
+### Step 2: Install Composer Dependencies
 
     Make sure Composer is installed on your system, then run:
 
