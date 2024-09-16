@@ -151,7 +151,7 @@ class GameTest extends TestCase
         ])->get("/api/players/{$this->user->id}/games");
 
         $response->assertStatus(200);
-        
+
         $response->assertJsonStructure([
             'user' => [
                 'id', 'username', 'email'
@@ -165,21 +165,27 @@ class GameTest extends TestCase
         ]);
     }
 
-    /*#[Test]
+    #[Test]
     public function test_user_cannot_get_other_user_games()
     {
         // Create some games for another user
         Game::factory()->count(2)->create([
-            'user_id' => $this->otherUser->id,
+            'user_id' => $this->guest->id,
         ]);
 
+        // Generate a personal access token for the user
+        $token = $this->guest->createToken('TestToken')->accessToken;
+
         // Send a GET request trying to fetch the games of another user
-        $response = $this->getJson("/api/players/{$this->otherUser->id}/games");
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->get("/api/players/{$this->user->id}/games");
 
         $response->assertStatus(403);
+        
         $response->assertJson([
             "message" => "You're not authorized to acces this player's profile.",
         ]);
-    }*/
+    }
 }
  
