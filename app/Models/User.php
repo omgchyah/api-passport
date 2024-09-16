@@ -117,7 +117,10 @@ class User extends Authenticatable
      */
     public static function getWinner()
     {
-        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
+        // Fetch only users with at least one game
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])
+        ->has('games') // Ensures the user has played at least one game
+        ->get();
 
         $winners = [];
         $highestSuccessPercentage = -1;
@@ -140,7 +143,10 @@ class User extends Authenticatable
      */
     public static function getLoser()
     {
-        $players = User::with('games')->whereIn('role', ['user', 'guest'])->get();
+        // Fetch only users with at least one game
+        $players = User::with('games')->whereIn('role', ['user', 'guest'])
+        ->has('games') // Ensures the user has played at least one game
+        ->get();
 
         $losers = [];
         $lowestSuccessPercentage = 101;
