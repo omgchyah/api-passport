@@ -210,13 +210,50 @@ class UserTest extends TestCase
             'email' => $this->guest->email,
         ]);
     }
+    #[Test]
+    public function test_admin_can_get_ranking()
+    {
+        $token = $this->admin->createToken('adminToken')->accessToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('api/players/ranking');
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'totalAverageSuccessPercentage',
+        ]);
+    }
+    #[Test]
+    public function test_admin_can_see_loser()
+    {
+        $token = $this->admin->createToken('adminToken')->accessToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('api/players/ranking/loser');
+
+        $response->assertStatus(200);
+    }
+    #[Test]
+    public function test_admin_can_see_winner()
+    {
+        $token = $this->admin->createToken('adminToken')->accessToken;
+    
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('api/players/ranking/winner');
+    
+        $response->assertStatus(200);
+        
+    }
+
 
 
 
 /*                 //Admin-specific routes
-    Route::middleware(['role:admin'])->group(function() {
-        Route::get("players", [UserController::class, "getAllPlayers"]);
-        Route::get("players/ranking", [UserController::class, "getRanking"]);
+    Route::middleware(['role:admin'])->group(function[UserController::class, "getRanking"]);
         Route::get("players/ranking/loser", [UserController::class, "getLoser"]);
         Route::get("players/ranking/winner", [UserController::class, "getWinner"]); */
     
