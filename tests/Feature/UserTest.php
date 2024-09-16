@@ -39,7 +39,7 @@ class UserTest extends TestCase
             'role' => 'guest'
         ]);
 
-        $this->guest = User::factory()->create([
+        $this->admin = User::factory()->create([
             'username' => 'Test Admin',
             'email' => 'admin@test.com',
             'password' => Hash::make('password'),
@@ -174,6 +174,40 @@ class UserTest extends TestCase
                 'created_at' => $this->user->created_at->toISOString(),
                 'updated_at' => $this->user->updated_at->toISOString(),
             ]
+        ]);
+    }
+    #[Test]
+    public function test_admin_can_see_all_players()
+    {
+        $token = $this->admin->createToken('adminToken')->accessToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('api/players');
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'players' => [
+                '*' => [
+                    'id',
+                    'username',
+                    'email',
+                    'successPercentage'
+                ]
+            ]
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $this->user->id,
+            'username' => $this->user->username,
+            'email' => $this->user->email,
+        ]);
+
+        $response->assertJsonFragment([
+            'id' => $this->guest->id,
+            'username' => $this->guest->username,
+            'email' => $this->guest->email,
         ]);
     }
 
