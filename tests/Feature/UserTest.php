@@ -308,5 +308,16 @@ class UserTest extends TestCase
         }  
     }
     #[Test]
+    public function test_user_cant_see_all_players()
+    {
+        $token = $this->user->createToken('userToken')->accessToken;
+    
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('api/players');
+    
+        $response->assertStatus(403);
+    }
+
 
 }
